@@ -25,19 +25,54 @@ const navbar=document.querySelector("nav");
       }
    })
 
-   if(localStorage.theme==='dark' || (!('theme' in localStorage )&& window.matchMedia('(prefers-color-scheme:dark)').matches)){
-      document.documentElement.classList.add('dark')
+ 
+   // Initialize theme based on user preference or system preference
+document.addEventListener('DOMContentLoaded', function() {
+   // Check for saved theme preference or use system preference
+   const savedTheme = localStorage.getItem('theme');
+   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+   
+   // Set initial theme
+   if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+       document.documentElement.classList.add('dark');
+       updateThemeIcon(true);
+   } else {
+       document.documentElement.classList.remove('dark');
+       updateThemeIcon(false);
    }
-   else{
-      document.documentElement.classList.remove('dark')
-   }
-   function toggleTheme(){
-      document.documentElement.classList.toggle('dark')
-      if(document.documentElement.classList.contains('dark')){
-         localStorage.theme='dark'
+});
 
-      }
-      else{
-         localStorage.theme='light'
-      }
+// Toggle theme function
+function toggleTheme() {
+   const isDark = document.documentElement.classList.toggle('dark');
+   
+   // Save theme preference to localStorage
+   localStorage.setItem('theme', isDark ? 'dark' : 'light');
+   
+   // Update the icon
+   updateThemeIcon(isDark);
+}
+
+// Update moon/sun icon based on current theme
+function updateThemeIcon(isDark) {
+   const themeIcon = document.querySelector('button[onclick="toggleTheme()"] img');
+   
+   if (themeIcon) {
+       if (isDark) {
+           themeIcon.src = "images/sun_icon.png"; // Change to sun icon in dark mode
+           themeIcon.alt = "Switch to Light Mode";
+       } else {
+           themeIcon.src = "images/moon_icon.png"; // Change to moon icon in light mode
+           themeIcon.alt = "Switch to Dark Mode";
+       }
    }
+}
+
+// Mobile menu functions
+function openMenu() {
+   document.getElementById('sideMenu').style.right = '0';
+}
+
+function closeMenu() {
+   document.getElementById('sideMenu').style.right = '-16rem'; // -64 in rem
+}
